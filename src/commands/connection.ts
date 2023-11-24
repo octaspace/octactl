@@ -34,7 +34,7 @@ export async function connectVPN(id:string) {
     catch(err:any)
     {
         if(err instanceof KeyError){
-            console.log("Invalid API Key")
+            console.log("Please Login")
             return;
         }
         if(err instanceof ApiError){

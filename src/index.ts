@@ -5,6 +5,7 @@ import * as os from 'os';
 import { displayDepositAddress, displayDepositQr } from './commands/deposit';
 import { connectVPN, disconnectVPN } from './commands/connection';
 import { init } from './commands/init';
+import { displayVPNNodes } from './commands/list';
 
 program.hook('preAction',()=>{
   if(os.userInfo().username!='root')
@@ -46,6 +47,15 @@ program
   .action(() => {
     balance()
   });
+
+  const list = program.command('list')
+  .description('Display All Nodes providing specific service');
+
+  list.command("vpn")
+  .description("Show VPN Nodes")
+  .action(()=>{
+    displayVPNNodes()
+  })
 
   const deposit = program.command('deposit')
   .description('Display Deposit details');
