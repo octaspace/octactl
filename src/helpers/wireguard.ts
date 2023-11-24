@@ -28,8 +28,6 @@ export async function connect(): Promise<boolean>{
 
 export async function disconnect(): Promise<boolean> {
     try{
-        if(await isConnected())
-        {
             let command = `wg-quick down ${wginterface}`
             const childProcess = await spawn(command, { shell: true });
             return new Promise<boolean>((resolve) => {
@@ -41,9 +39,7 @@ export async function disconnect(): Promise<boolean> {
                   }
                 });
               });
-        }
-        return false;
-        }
+            }
     catch(err:any){
 console.log(err.message)
         return false;

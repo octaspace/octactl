@@ -5,6 +5,7 @@ import * as os from 'os';
 import { displayDepositAddress, displayDepositQr } from './commands/deposit';
 import { connectVPN, disconnectVPN } from './commands/connection';
 import { init } from './commands/init';
+
 program.hook('preAction',()=>{
   if(os.userInfo().username!='root')
   {

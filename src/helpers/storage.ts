@@ -5,6 +5,8 @@ const filename = 'secret.json';
 const foldername = '.octacli';
 const wginterface = 'octa01';
 
+type fetchData ='key'|'uuid';
+
 interface data {
     key:string
     services:{
@@ -37,7 +39,7 @@ export function saveAPIKey(key:string) {
     }
 }
 
-export async function fetchAPIKey() {
+export async function fetchFile(property:fetchData) {
     try{
         const homeDir = os.homedir();
         const path = `${homeDir}/${foldername}/${filename}`
@@ -45,10 +47,23 @@ export async function fetchAPIKey() {
             throw Error("Please Login")
         }
         const file_data : data= JSON.parse(fs.readFileSync(path).toString())
-        if(file_data.key!==null&&file_data.key.length==64)
-            {
-                return file_data.key;
-            }
+        switch(property)
+        {
+            case 'key':
+                if(file_data.key!==null&&file_data.key.length==64)
+                {
+                    return file_data.key;
+                }
+            break;
+            case 'uuid':
+                if(file_data.services.uuid!==null)
+                {
+                    return file_data.services.uuid;
+                }
+            break;
+            default:
+                return "";
+        }
         return "";
     }
     catch(err:any){
@@ -98,7 +113,7 @@ export async function saveUUID(uuid:string) {
     try{
         const homeDir = os.homedir();
         const path = `${homeDir}/${foldername}`;
-        const key = await fetchAPIKey();
+        const key = await fetchFile('key');
         const data :data = {key:key,services:{uuid:uuid}};
         if (!fs.existsSync(path)) {
             fs.mkdir(path, { recursive: true }, (err) => {
@@ -119,4 +134,3 @@ export async function saveUUID(uuid:string) {
         return false;
     }
 }
-

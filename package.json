@@ -1,5 +1,5 @@
 {
-  "name": "octacli",
+  "name": "octactl",
   "version": "1.0.0",
   "description": "",
   "main": "build/index.js",
@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/octaspace/octactl#readme",
   "dependencies": {
+    "@octaspace/api.js": "^1.0.1",
     "@types/node": "^20.8.9",
     "commander": "^11.1.0",
     "node-fetch": "2.6.7",
