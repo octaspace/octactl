@@ -5,7 +5,7 @@
   "main": "build/index.js",
   "bin": "build/index.js",
   "scripts": {
-    "build": "npx tsc src/index.ts --outDir build/ &&pkg -t node18-linux-x64 build/index.js",
+    "build": "npx tsc src/index.ts --outDir build/ && pkg -t node18-linux-x64 -o octactl build/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

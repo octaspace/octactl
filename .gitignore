@@ -4,3 +4,4 @@ build/*
 tmp/*
 index*
 .vscode/*
+octactl
