@@ -4,7 +4,6 @@ const program = new Command();
 import * as os from 'os';
 import { displayDepositAddress, displayDepositQr } from './commands/deposit';
 import { connectVPN, disconnectVPN } from './commands/connection';
-import { init } from './commands/init';
 import { displayVPNNodes } from './commands/list';
 
 program.hook('preAction',()=>{
@@ -19,13 +18,6 @@ program
   .name('Octa.space Cli Client')
   .description('Tool to Interact with Octa.Space CUBE, order services, connect to VPN, etc')
   .version('0.0.1');
-
-  program
-  .command('init')
-  .description('Quick command to install dependencies')
-  .action(() => {
-    init()
-  });
 
   program
   .command('login')
