@@ -43,7 +43,7 @@ export async function balance(){
         console.log(`Balance:${bal} OCTA`)
         return;
     }
-    catch(err){
+    catch(err:any){
         if(err instanceof KeyError)
         {
             console.log('Please Login')
@@ -54,6 +54,6 @@ export async function balance(){
             console.log('Network Error')
             return
         }
-        console.log('Unexpected Error Occured')
+        console.log(err.message)
     }
 }

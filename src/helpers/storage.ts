@@ -34,7 +34,6 @@ export function saveAPIKey(key:string) {
         })
     }
     catch(err){
-        console.log(err);
         return false;
     }
 }
@@ -67,8 +66,7 @@ export async function fetchFile(property:fetchData) {
         return "";
     }
     catch(err:any){
-        console.log(err.message)
-        return ""
+        throw err;
     }
 }
 
@@ -89,14 +87,14 @@ export function removeAPIKey() {
         return;
     }
     catch(err){
-        console.log(err);
-        return;
+        throw err;
     }
 }
 
 export async function saveWGConfig(config:string) {
     try{
-        const path = `/etc/wireguard/`
+        const homeDir = os.homedir();
+        const path = `${homeDir}/${foldername}`
         if (!fs.existsSync(path)) {
             throw new Error('Seems Wireguard is not properly installed')
         }
@@ -104,8 +102,7 @@ export async function saveWGConfig(config:string) {
         return true;
     }
     catch(err:any){
-        console.log(err.message);
-        return false;
+        throw err;
     }
 }
 
@@ -130,7 +127,6 @@ export async function saveUUID(uuid:string) {
         return true;
     }
     catch(err:any){
-        console.log(err.message);
-        return false;
+        throw err;
     }
 }

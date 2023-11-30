@@ -1,18 +1,9 @@
 import { Command } from 'commander';
 import { balance, login, logout } from './commands/account';
 const program = new Command();
-import * as os from 'os';
 import { displayDepositAddress, displayDepositQr } from './commands/deposit';
 import { connectVPN, disconnectVPN } from './commands/connection';
 import { displayVPNNodes } from './commands/list';
-
-program.hook('preAction',()=>{
-  if(os.userInfo().username!='root')
-  {
-    console.log('Admin/Superuser Privilages are required')
-    process.exit(126)
-  }
-})
 
 program
   .name('Octa.space Cli Client')

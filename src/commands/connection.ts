@@ -1,11 +1,15 @@
 import { fetchFile, saveUUID, saveWGConfig } from "../helpers/storage";
 import { connect, disconnect, isConnected } from "../helpers/wireguard";
-import {Octa, KeyError, ApiError} from '@octaspace/api.js';
+import {Octa, KeyError} from '@octaspace/api.js';
 
 export async function connectVPN(id:string) {
     try{
         if(id===undefined||id===""){
             console.log('Please specify Node ID as argument')
+            return;
+        }
+        if(await isConnected()){
+            console.log('Connection Already Established')
             return;
         }
         const key = await fetchFile('key');
@@ -37,23 +41,24 @@ export async function connectVPN(id:string) {
             console.log("Please Login")
             return;
         }
-        if(err instanceof ApiError){
-            console.log("Network Error")
-            return;
-        }
         console.log(err.message)
     }
 }
 
 export async function disconnectVPN(){
-    const key = await fetchFile('key');
-    const uuid = await fetchFile('uuid');
-    const status = await isConnected()
-    if(status){
-        if(await disconnect())
-        console.log("Disconnected")
-        await new Octa(key).stopVPN(uuid);
-        return;
-    }
+    try{
+        const key = await fetchFile('key');
+        const uuid = await fetchFile('uuid');
+        const status = await isConnected()
+        if(status){
+            if(await disconnect())
+            console.log("Disconnected")
+            await new Octa(key).stopVPN(uuid);
+            return;
+        }
     console.log("Not Connected")
+    }
+    catch(err:any){
+        console.log(err.message)
+    }
 }

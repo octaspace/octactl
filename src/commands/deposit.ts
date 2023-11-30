@@ -12,7 +12,7 @@ export async function displayDepositQr(){
          return;
        })
     }
-    catch(err){
+    catch(err:any){
         if(err instanceof KeyError)
         {
             console.log('Please Login')
@@ -23,7 +23,7 @@ export async function displayDepositQr(){
             console.log('Network Error')
             return
         }
-        console.log('Unexpected Error Occured')
+        console.log(err.message)
     }
 }
 
@@ -35,7 +35,7 @@ export async function displayDepositAddress(){
         console.log("Note: Only Supports OCTA Network")
         return;
     }
-    catch(err){
+    catch(err:any){
         if(err instanceof KeyError)
         {
             console.log('Please Login')
@@ -46,6 +46,6 @@ export async function displayDepositAddress(){
             console.log('Network Error')
             return
         }
-        console.log('Unexpected Error Occured')
+        console.log(err.message)
     }
 }
