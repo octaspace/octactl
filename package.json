@@ -6,7 +6,7 @@
   "bin": "build/index.js",
   "scripts": {
     "build": "npx tsc src/index.ts --outDir build/ && pkg -t node18-linux-x64 -o octactl build/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prettier": "npx prettier . --write"
   },
   "repository": {
     "type": "git",
@@ -29,6 +29,7 @@
   "devDependencies": {
     "@types/qrcode": "^1.5.4",
     "pkg": "^5.8.1",
+    "prettier": "3.1.0",
     "typescript": "^5.2.2"
   }
 }
