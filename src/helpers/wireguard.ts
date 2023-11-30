@@ -1,8 +1,9 @@
 const { spawn } = require("child_process");
 import * as os from "node:os";
+import { removeWGConfig } from "./storage";
 
 const wginterface = "octa01";
-const foldername = ".octacli";
+const foldername = ".octactl";
 
 export async function connect(): Promise<boolean> {
   try {
@@ -38,8 +39,9 @@ export async function disconnect(): Promise<boolean> {
         : `wg-quick down ${path}`;
     const childProcess = await spawn(command, { shell: true });
     return new Promise<boolean>((resolve) => {
-      childProcess.on("close", (code: number) => {
+      childProcess.on("close", async (code: number) => {
         if (code === 0) {
+          await removeWGConfig();
           resolve(true);
         } else {
           resolve(false);

@@ -1,64 +1,45 @@
 import * as os from "node:os";
 import * as fs from "fs";
-
-const filename = "secret.json";
-const foldername = ".octacli";
-const wginterface = "octa01";
+const configstore = require("conf");
 
 type fetchData = "key" | "uuid";
 
-interface data {
-  key: string;
-  services: {
-    uuid: string;
-  };
-}
+const projectname = "octactl";
+const encryptionKey = "bLQVlvQMLf";
+//for storing wg config file
+const foldername = ".octactl";
+const wginterface = "octa01";
 
 export function saveAPIKey(key: string) {
   try {
-    const homeDir = os.homedir();
-    const path = `${homeDir}/${foldername}`;
-    const data: data = { key: key, services: { uuid: "" } };
-    if (!fs.existsSync(path)) {
-      fs.mkdir(path, { recursive: true }, (err) => {
-        if (err) throw err;
-      });
-    }
-    fs.writeFile(`${path}/${filename}`, JSON.stringify(data), (err) => {
-      if (err) throw err;
-      else {
-        console.log("Success");
-        return true;
-      }
+    const conf = new configstore({
+      projectName: projectname,
+      encryptionKey: encryptionKey,
     });
+    conf.set("apikey", key);
+    return true;
   } catch (err) {
     return false;
   }
 }
 
-export async function fetchFile(property: fetchData) {
+export function fetchFile(property: fetchData) {
   try {
-    const homeDir = os.homedir();
-    const path = `${homeDir}/${foldername}/${filename}`;
-    if (!fs.existsSync(path)) {
-      throw Error("Please Login");
+    const conf = new configstore({
+      projectName: projectname,
+      encryptionKey: encryptionKey,
+    });
+    if (!conf.has("apikey")) {
+      throw new Error("Please Login");
     }
-    const file_data: data = JSON.parse(fs.readFileSync(path).toString());
     switch (property) {
       case "key":
-        if (file_data.key !== null && file_data.key.length == 64) {
-          return file_data.key;
-        }
-        break;
+        return conf.get("apikey");
       case "uuid":
-        if (file_data.services.uuid !== null) {
-          return file_data.services.uuid;
-        }
-        break;
+        return conf.get("uuid");
       default:
         return "";
     }
-    return "";
   } catch (err: any) {
     throw err;
   }
@@ -66,19 +47,31 @@ export async function fetchFile(property: fetchData) {
 
 export function removeAPIKey() {
   try {
-    const homeDir = os.homedir();
-    const path = `${homeDir}/${foldername}`;
-    if (fs.existsSync(path)) {
-      fs.rm(path, { recursive: true }, (err) => {
-        if (err) throw err;
-        else console.log("Logged Out");
-        return;
-      });
-    } else {
-      console.log("Not Logged In");
+    const conf = new configstore({
+      projectName: projectname,
+      encryptionKey: encryptionKey,
+    });
+    if (conf.has("apikey")) {
+      conf.clear();
+      console.log("Logged Out");
+      return;
     }
+    console.log("Not Logged In");
     return;
   } catch (err) {
+    throw err;
+  }
+}
+
+export function saveUUID(uuid: string) {
+  try {
+    const conf = new configstore({
+      projectName: projectname,
+      encryptionKey: encryptionKey,
+    });
+    conf.set("uuid", uuid);
+    return true;
+  } catch (err: any) {
     throw err;
   }
 }
@@ -88,33 +81,24 @@ export async function saveWGConfig(config: string) {
     const homeDir = os.homedir();
     const path = `${homeDir}/${foldername}`;
     if (!fs.existsSync(path)) {
-      throw new Error("Seems Wireguard is not properly installed");
+      fs.mkdirSync(path);
     }
-    fs.writeFileSync(`${path}/${wginterface}.conf`, config.toString());
+    fs.writeFileSync(`${path}/${wginterface}.conf`, config);
     return true;
   } catch (err: any) {
     throw err;
   }
 }
 
-export async function saveUUID(uuid: string) {
+export async function removeWGConfig() {
   try {
     const homeDir = os.homedir();
     const path = `${homeDir}/${foldername}`;
-    const key = await fetchFile("key");
-    const data: data = { key: key, services: { uuid: uuid } };
     if (!fs.existsSync(path)) {
-      fs.mkdir(path, { recursive: true }, (err) => {
-        if (err) throw err;
-      });
+      return;
     }
-    fs.writeFile(`${path}/${filename}`, JSON.stringify(data), (err) => {
-      if (err) throw err;
-      else {
-        return true;
-      }
-    });
-    return true;
+    fs.rmSync(`${path}/${wginterface}.conf`);
+    return;
   } catch (err: any) {
     throw err;
   }

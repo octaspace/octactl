@@ -12,7 +12,7 @@ export async function connectVPN(id: string) {
       console.log("Connection Already Established");
       return;
     }
-    const key = await fetchFile("key");
+    const key = fetchFile("key");
     const octa = new Octa(key);
     const uuid = (await octa.createVPN("wg", parseInt(id))).uuid;
     saveUUID(uuid);
@@ -43,8 +43,8 @@ export async function connectVPN(id: string) {
 
 export async function disconnectVPN() {
   try {
-    const key = await fetchFile("key");
-    const uuid = await fetchFile("uuid");
+    const key = fetchFile("key");
+    const uuid = fetchFile("uuid");
     const status = await isConnected();
     if (status) {
       if (await disconnect()) console.log("Disconnected");

@@ -3,7 +3,7 @@ import { fetchFile } from "../helpers/storage";
 
 export async function displayVPNNodes() {
   try {
-    const key = await fetchFile("key");
+    const key = fetchFile("key");
     const data = await new Octa(key).getVPNNodes();
     console.table(data);
   } catch (err: any) {

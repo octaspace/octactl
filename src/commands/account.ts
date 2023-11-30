@@ -35,7 +35,7 @@ export function logout() {
 
 export async function balance() {
   try {
-    const token = await fetchFile("key");
+    const token = fetchFile("key");
     const balance = (await new Octa(token).getAccountBalance()).balance;
     let bal = (balance * 1e-18).toFixed(4);
     console.log(`Balance:${bal} OCTA`);

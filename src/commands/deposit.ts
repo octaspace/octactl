@@ -4,7 +4,7 @@ import { Octa, KeyError, ApiError } from "@octaspace/api.js";
 
 export async function displayDepositQr() {
   try {
-    const token = await fetchFile("key");
+    const token = fetchFile("key");
     const address = (await new Octa(token).getAccountInfo()).deposit_address;
     QRCode.toString(
       `ethereum:${address}@800001`,
@@ -30,7 +30,7 @@ export async function displayDepositQr() {
 
 export async function displayDepositAddress() {
   try {
-    const token = await fetchFile("key");
+    const token = fetchFile("key");
     const address = (await new Octa(token).getAccountInfo()).deposit_address;
     console.log(`Address:${address}`);
     console.log("Note: Only Supports OCTA Network");
