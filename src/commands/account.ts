@@ -37,8 +37,7 @@ export async function balance() {
   try {
     const token = fetchFile("key");
     const balance = (await new Octa(token).getAccountBalance()).balance;
-    let bal = (balance * 1e-18).toFixed(4);
-    console.log(`Balance:${bal} OCTA`);
+    console.log((balance * 1e-18).toFixed(4));
     return;
   } catch (err: any) {
     if (err instanceof KeyError) {
