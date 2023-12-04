@@ -9,7 +9,9 @@ const wginterface = "octa01";
 
 const conf = new configstore({
   projectName: 'octactl',
-  encryptionKey: 'bLQVlvQMLf'
+  encryptionKey: 'bLQVlvQMLf',
+  configFileMode: 0o600,
+  projectSuffix: ''
 });
 
 type fetchData = "key" | "uuid";
