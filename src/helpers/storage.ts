@@ -1,21 +1,21 @@
 import * as os from "node:os";
 import * as fs from "fs";
+
 const configstore = require("conf");
 
-type fetchData = "key" | "uuid";
-
-const projectname = "octactl";
-const encryptionKey = "bLQVlvQMLf";
 //for storing wg config file
 const foldername = ".octactl";
 const wginterface = "octa01";
 
+const conf = new configstore({
+  projectName: 'octactl',
+  encryptionKey: 'bLQVlvQMLf'
+});
+
+type fetchData = "key" | "uuid";
+
 export function saveAPIKey(key: string) {
   try {
-    const conf = new configstore({
-      projectName: projectname,
-      encryptionKey: encryptionKey,
-    });
     conf.set("apikey", key);
     return true;
   } catch (err) {
@@ -25,10 +25,6 @@ export function saveAPIKey(key: string) {
 
 export function fetchFile(property: fetchData) {
   try {
-    const conf = new configstore({
-      projectName: projectname,
-      encryptionKey: encryptionKey,
-    });
     if (!conf.has("apikey")) {
       throw new Error("Please Login");
     }
@@ -47,10 +43,6 @@ export function fetchFile(property: fetchData) {
 
 export function removeAPIKey() {
   try {
-    const conf = new configstore({
-      projectName: projectname,
-      encryptionKey: encryptionKey,
-    });
     if (conf.has("apikey")) {
       conf.clear();
       console.log("Logged Out");
@@ -65,10 +57,6 @@ export function removeAPIKey() {
 
 export function saveUUID(uuid: string) {
   try {
-    const conf = new configstore({
-      projectName: projectname,
-      encryptionKey: encryptionKey,
-    });
     conf.set("uuid", uuid);
     return true;
   } catch (err: any) {
