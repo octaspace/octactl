@@ -11,7 +11,6 @@ export async function displayDepositQr() {
       { type: "terminal" },
       function (err: any, url: any) {
         console.log(url);
-        console.log("Note: Only Supports OCTA Network");
         return;
       },
     );
@@ -32,8 +31,7 @@ export async function displayDepositAddress() {
   try {
     const token = fetchFile("key");
     const address = (await new Octa(token).getAccountInfo()).deposit_address;
-    console.log(`Address:${address}`);
-    console.log("Note: Only Supports OCTA Network");
+    console.log(address);
     return;
   } catch (err: any) {
     if (err instanceof KeyError) {
