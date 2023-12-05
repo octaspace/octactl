@@ -17,15 +17,16 @@
   "bugs": {
     "url": "https://github.com/octaspace/octactl/issues"
   },
-  "homepage": "https://github.com/octaspace/octactl#readme",
+  "homepage": "https://github.com/octaspace/octactl",
   "dependencies": {
     "@octaspace/api.js": "^1.0.1",
     "@types/node": "^20.8.9",
     "commander": "^11.1.0",
+    "conf": "^10.2.0",
+    "console-table-printer": "^2.11.2",
     "node-fetch": "2.6.7",
     "node-gyp": "^10.0.0",
-    "qrcode": "^1.5.3",
-    "conf": "^10.2.0"
+    "qrcode": "^1.5.3"
   },
   "devDependencies": {
     "@types/qrcode": "^1.5.4",
