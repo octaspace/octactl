@@ -72,8 +72,9 @@ vpn
 vpn
   .command("disconnect")
   .description("Terminate VPN connection")
-  .action(() => {
-    disconnectVPN();
+  .argument("NODE_ID", "Node ID")
+  .action((node_id) => {
+    disconnectVPN(node_id);
   });
 
 program.parse();
