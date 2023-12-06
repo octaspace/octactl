@@ -1,11 +1,8 @@
-import { fetchFile, removeAPIKey, saveAPIKey } from "../helpers/storage";
+import { fetchAPIKey, removeAPIKey, saveAPIKey } from "../helpers/storage";
 import { Octa, KeyError, ApiError } from "@octaspace/api.js";
 
 export async function login(key: string) {
   try {
-    if (key == undefined) {
-      throw new Error("API Key is required");
-    }
     if (key.length != 64) {
       throw new Error("Invalid API Key");
     }
@@ -35,7 +32,7 @@ export function logout() {
 
 export async function balance() {
   try {
-    const token = fetchFile("key");
+    const token = fetchAPIKey();
     const balance = (await new Octa(token).getAccountBalance()).balance;
     console.log((balance * 1e-18).toFixed(4));
     return;

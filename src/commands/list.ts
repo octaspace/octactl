@@ -1,11 +1,11 @@
 import { Table } from 'console-table-printer';
 
 import { Octa, KeyError, ApiError } from "@octaspace/api.js";
-import { fetchFile } from "../helpers/storage";
+import { fetchAPIKey } from "../helpers/storage";
 
 export async function displayVPNNodes() {
   try {
-    const key = fetchFile("key");
+    const key = fetchAPIKey();
     const data = await new Octa(key).getVPNNodes();
 
     const p = new Table({

@@ -1,32 +1,25 @@
-import { fetchFile, saveUUID, saveWGConfig } from "../helpers/storage";
+import { fetchAPIKey, fetchWGUUID, saveWGConfig } from "../helpers/storage";
 import { connect, disconnect, isConnected } from "../helpers/wireguard";
 import { Octa, KeyError } from "@octaspace/api.js";
 
-export async function connectVPN(id: string) {
+export async function connectVPN(node_id: string) {
   try {
-    if (id === undefined || id === "") {
-      console.log("Please specify Node ID as argument");
-      return;
-    }
-    if (await isConnected()) {
+    if (await isConnected(node_id)) {
       console.log("Connection Already Established");
       return;
     }
-    const key = fetchFile("key");
+    const key = fetchAPIKey();
     const octa = new Octa(key);
-    const uuid = (await octa.createVPN("wg", parseInt(id))).uuid;
-    saveUUID(uuid);
+    const uuid = (await octa.createVPN("wg", parseInt(node_id))).uuid;
     const data = await octa.getVPN(uuid);
     if (data.is_ready == false) {
       await octa.stopVPN(uuid);
       throw new Error("Connection Failed");
     }
-    const ip = data.ip;
-    const country = data.country;
-    if (await saveWGConfig(data.config)) {
-      let status = await connect();
+    if (await saveWGConfig(node_id, uuid, data.config)) {
+      let status = await connect(node_id);
       if (status) {
-        console.log(`Connected\nIP:${ip}\nCountry:${country}`);
+        console.log(`IP: ${data.ip}\nCountry: ${data.country}`);
         return;
       }
     }
@@ -41,14 +34,15 @@ export async function connectVPN(id: string) {
   }
 }
 
-export async function disconnectVPN() {
+export async function disconnectVPN(node_id: string) {
   try {
-    const key = fetchFile("key");
-    const uuid = fetchFile("uuid");
-    const status = await isConnected();
+    const key = fetchAPIKey();
+    const uuid = fetchWGUUID(node_id);
+    const status = await isConnected(node_id);
     if (status) {
-      if (await disconnect()) console.log("Disconnected");
+      await disconnect(node_id);
       await new Octa(key).stopVPN(uuid);
+      console.log("Disconnected");
       return;
     }
     console.log("Not Connected");

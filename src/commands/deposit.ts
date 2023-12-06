@@ -1,10 +1,10 @@
 import * as QRCode from "qrcode";
-import { fetchFile } from "../helpers/storage";
+import { fetchAPIKey } from "../helpers/storage";
 import { Octa, KeyError, ApiError } from "@octaspace/api.js";
 
 export async function displayDepositQr() {
   try {
-    const token = fetchFile("key");
+    const token = fetchAPIKey();
     const address = (await new Octa(token).getAccountInfo()).deposit_address;
     QRCode.toString(
       `ethereum:${address}@800001`,
@@ -29,7 +29,7 @@ export async function displayDepositQr() {
 
 export async function displayDepositAddress() {
   try {
-    const token = fetchFile("key");
+    const token = fetchAPIKey();
     const address = (await new Octa(token).getAccountInfo()).deposit_address;
     console.log(address);
     return;
