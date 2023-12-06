@@ -18,6 +18,7 @@ jobs:
       - run: npm install
       - run: npm run build
 
-      - uses: actions/upload-artifact@v2
+      - name: release
+        uses: softprops/action-gh-release@v1
         with:
-          path: octactl
+          files: octactl
