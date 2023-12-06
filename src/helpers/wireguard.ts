@@ -1,63 +1,23 @@
-const { spawn } = require("child_process");
-import * as os from "node:os";
-import { removeWGConfig } from "./storage";
+import { spawn } from "node:child_process";
+import { configDir, removeWGConfig } from "./storage";
 
-const wginterface = "octa01";
-const foldername = ".octactl";
-
-export async function connect(): Promise<boolean> {
-  try {
-    const homeDir = os.homedir();
-    const path = `${homeDir}/${foldername}/${wginterface}.conf`;
-    let command =
-      os.userInfo().username != "root"
-        ? `sudo wg-quick up ${path}`
-        : `wg-quick up ${path}`;
-    const childProcess = await spawn(command, { shell: true });
-    return new Promise<boolean>((resolve) => {
-      childProcess.on("close", (code: number) => {
-        if (code === 0) {
-          resolve(true);
-        } else {
-          resolve(false);
-        }
-      });
-    });
-  } catch (err: any) {
-    console.log(err.message);
-    return false;
-  }
+export async function connect(node_id: string): Promise<boolean> {
+  return exec(`sudo wg-quick up ${configDir()}/octa-wg-${node_id}.conf`);
 }
 
-export async function disconnect(): Promise<boolean> {
-  try {
-    const homeDir = os.homedir();
-    const path = `${homeDir}/${foldername}/${wginterface}.conf`;
-    let command =
-      os.userInfo().username != "root"
-        ? `sudo wg-quick down ${path}`
-        : `wg-quick down ${path}`;
-    const childProcess = await spawn(command, { shell: true });
-    return new Promise<boolean>((resolve) => {
-      childProcess.on("close", async (code: number) => {
-        if (code === 0) {
-          await removeWGConfig();
-          resolve(true);
-        } else {
-          resolve(false);
-        }
-      });
-    });
-  } catch (err: any) {
-    console.log(err.message);
-    return false;
-  }
+export async function disconnect(node_id: string): Promise<boolean> {
+  await exec(`sudo wg-quick down ${configDir()}/octa-wg-${node_id}.conf`);
+  await removeWGConfig(node_id);
+  return true;
 }
 
-export async function isConnected(): Promise<boolean> {
+export async function isConnected(node_id: string): Promise<boolean> {
+  return exec(`sudo wg show octa-wg-${node_id}`);
+}
+
+async function exec(cmd: string): Promise<boolean> {
   try {
-    let command = `ifconfig | grep "${wginterface}"`;
-    const childProcess = await spawn(command, { shell: true });
+    const childProcess = await spawn(cmd, { shell: true });
     return new Promise<boolean>((resolve) => {
       childProcess.on("close", (code: number) => {
         if (code === 0) {

@@ -1,11 +1,7 @@
-import * as os from "node:os";
-import * as fs from "fs";
+import * as fs from "node:fs";
+import * as path from "node:path";
 
 const configstore = require("conf");
-
-//for storing wg config file
-const foldername = ".octactl";
-const wginterface = "octa01";
 
 const conf = new configstore({
   projectName: 'octactl',
@@ -14,7 +10,9 @@ const conf = new configstore({
   projectSuffix: ''
 });
 
-type fetchData = "key" | "uuid";
+export function configDir() {
+  return `${path.dirname(conf.path)}`;
+}
 
 export function saveAPIKey(key: string) {
   try {
@@ -25,22 +23,15 @@ export function saveAPIKey(key: string) {
   }
 }
 
-export function fetchFile(property: fetchData) {
-  try {
-    if (!conf.has("apikey")) {
-      throw new Error("Please Login");
-    }
-    switch (property) {
-      case "key":
-        return conf.get("apikey");
-      case "uuid":
-        return conf.get("uuid");
-      default:
-        return "";
-    }
-  } catch (err: any) {
-    throw err;
-  }
+export function fetchAPIKey() {
+  if (!conf.has("apikey")) {
+    throw new Error("Please Login");
+  };
+  return conf.get("apikey");
+}
+
+export function fetchWGUUID(node_id: string) {
+  return conf.get(`wg.${node_id}.uuid`);
 }
 
 export function removeAPIKey() {
@@ -57,39 +48,18 @@ export function removeAPIKey() {
   }
 }
 
-export function saveUUID(uuid: string) {
+export async function saveWGConfig(node_id: string, uuid: string, config: string) {
   try {
-    conf.set("uuid", uuid);
+    const cfg_path = `${configDir()}/octa-wg-${node_id}.conf`;
+    fs.writeFileSync(cfg_path, config, { mode: 0o600 });
+    conf.set({ wg: { [node_id]: { config: cfg_path, uuid: uuid }}});
     return true;
   } catch (err: any) {
     throw err;
   }
 }
 
-export async function saveWGConfig(config: string) {
-  try {
-    const homeDir = os.homedir();
-    const path = `${homeDir}/${foldername}`;
-    if (!fs.existsSync(path)) {
-      fs.mkdirSync(path);
-    }
-    fs.writeFileSync(`${path}/${wginterface}.conf`, config);
-    return true;
-  } catch (err: any) {
-    throw err;
-  }
-}
-
-export async function removeWGConfig() {
-  try {
-    const homeDir = os.homedir();
-    const path = `${homeDir}/${foldername}`;
-    if (!fs.existsSync(path)) {
-      return;
-    }
-    fs.rmSync(`${path}/${wginterface}.conf`);
-    return;
-  } catch (err: any) {
-    throw err;
-  }
+export async function removeWGConfig(node_id: string) {
+  conf.delete(`wg.${node_id}`);
+  fs.rmSync(`${configDir()}/octa-wg-${node_id}.conf`);
 }
