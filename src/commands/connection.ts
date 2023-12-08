@@ -16,7 +16,7 @@ export async function connectVPN(node_id: string) {
       await octa.stopVPN(uuid);
       throw new Error("Connection Failed");
     }
-    if (await saveWGConfig(node_id, uuid, data.config)) {
+    if (await saveWGConfig(node_id, uuid, data.config.replace(/, ::\/0/g, ''))) {
       let status = await connect(node_id);
       if (status) {
         console.log(`IP: ${data.ip}\nCountry: ${data.country}`);
