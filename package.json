@@ -19,7 +19,7 @@
   },
   "homepage": "https://github.com/octaspace/octactl",
   "dependencies": {
-    "@octaspace/api.js": "^1.0.1",
+    "@octaspace/api.js": "1.0.3",
     "@types/node": "^20.8.9",
     "commander": "^11.1.0",
     "conf": "^10.2.0",

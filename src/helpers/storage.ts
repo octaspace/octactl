@@ -30,6 +30,14 @@ export function fetchAPIKey() {
   return conf.get("apikey");
 }
 
+export function setLastConnectedNodeID(node_id:string){
+  conf.set('lastConnectedNodeID',node_id);
+}
+
+export function getlastConnectedNodeID(){
+  return conf.get('lastConnectedNodeID');
+}
+
 export function fetchWGUUID(node_id: string) {
   return conf.get(`wg.${node_id}.uuid`);
 }
