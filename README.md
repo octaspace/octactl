@@ -1,3 +1,5 @@
+> **Deprecated:** `octactl` is superseded by the official [OctaSpace CLI (`octa-cli`)](https://github.com/octaspace/octa-cli). Please use `octa-cli` for new setups.
+
 # octactl - OctaSpace command line tool
 
 ## Installation
